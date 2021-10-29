@@ -1,0 +1,65 @@
+#API Accessing JSON - Nick Hoyt 10/28/2021
+
+"""
+This Python program uses the sodapy package to access JSON data
+using a web query written in the Socrata Query Language (SoQL).
+"""
+
+#https://data.cityofchicago.org/resource/85ca-t3if.json
+
+import pandas as pd
+from sodapy import Socrata
+
+#Initialize a Socrata oject using the URL of the API
+client=Socrata("data.cityofchicago.org",app_token="skrlve2AaDU7YKqXy5tDcZLZd")
+
+results = client.get("85ca-t3if",
+                     #Limits the number of columns returned
+                     select = "CRASH_DATE, POSTED_SPEED_LIMIT, WEATHER_CONDITION, LIGHTING_CONDITION, FIRST_CRASH_TYPE," \
+                       + "TRAFFICWAY_TYPE, LANE_CNT, ALIGNMENT, ROADWAY_SURFACE_COND, ROAD_DEFECT, CRASH_TYPE," \
+                       + "DAMAGE, PRIM_CONTRIBUTORY_CAUSE, SEC_CONTRIBUTORY_CAUSE, NUM_UNITS, MOST_SEVERE_INJURY," \
+                       + "INJURIES_TOTAL, INJURIES_FATAL, INJURIES_INCAPACITATING, INJURIES_NON_INCAPACITATING," \
+                       + "INJURIES_REPORTED_NOT_EVIDENT, INJURIES_NO_INDICATION, CRASH_HOUR, CRASH_DAY_OF_WEEK," \
+                       + "CRASH_MONTH",
+                     #Filters returned rows using the where parameter
+                     where = "REPORT_TYPE == 'ON SCENE'")
+
+#Constructs a Pandas DataFrame from results
+results_df = pd.DataFrame.from_records(results)
+
+#Following Lines Restucture the data
+#Recodes Weather_Condition for Clear weather as 1 & any other type of weather as 0 
+results_df.loc[results_df.WEATHER_CONDITION != 'CLEAR', 'WEATHER_CONDITION'] = 0
+results_df.loc[results_df.WEATHER_CONDITION == 'CLEAR', 'WEATHER_CONDITION'] = 1
+#Casts Weather_Condition as a boolean
+#Weather Clear is TRUE & any other weather type is FALSE
+results_df['WEATHER_CONDITION'] = results_df['WEATHER_CONDITION'].astype('bool')
+
+#Recodes ROADWAY_SURFACE_COND for DRY as 1 & any other type of road surface as 0 
+results_df.loc[results_df.ROADWAY_SURFACE_COND != 'DRY', 'ROADWAY_SURFACE_COND'] = 0
+results_df.loc[results_df.ROADWAY_SURFACE_COND == 'DRY', 'ROADWAY_SURFACE_COND'] = 1
+#Casts ROADWAY_SURFACE_COND as a boolean
+#ROADWAY_SURFACE_COND Dry is TRUE & any other type of condition is FALSE
+results_df['ROADWAY_SURFACE_COND'] = results_df['ROADWAY_SURFACE_COND'].astype('bool')
+
+#Recodes ROAD_DEFECT for No Defects as 1 & any other type of defect as 0 
+results_df.loc[results_df.ROAD_DEFECT != 'NO DEFECTS', 'ROAD_DEFECT'] = 0
+results_df.loc[results_df.ROAD_DEFECT == 'NO DEFECTS', 'ROAD_DEFECT'] = 1
+#Casts ROAD_DEFECT as a boolean
+#ROAD_DEFECT no defects is TRUE & any other type of condition is FALSE
+results_df['ROAD_DEFECT'] = results_df['ROAD_DEFECT'].astype('bool')
+
+#Saves the traffic crashes data in a JSON file
+results_df.to_json("trafficcrashes.json", orient = "records")
+
+
+#Following are checks to run on dataframe if desired
+"""
+#Prints the first 5 results from the dataframe results_df
+print("Traffic Crashes, first 5 results:")
+print(results_df.head())
+#Prints descriptive statistics of the dataframe results_df
+print("Traffic Crashes, descriptive statistics:")
+print(results_df.describe())
+"""
+
