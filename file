@@ -1,0 +1,33 @@
+#Data Visualization created on 11/28/2021 by Leticia Liakopulos
+# This code still doesn't work
+
+""" In this Pyton file, we will create different charts using matplotlib
+function and its methods to create the data visualization part of our project.
+The user will be able to choose between 3 charts that analyze different
+variables ( categorical and nuhmerical inside the file trafficcrashes.json """
+
+
+
+# import pandas and the necessary packages to import the json file and create the charts
+import pandas as pd
+import matplotlib.pyplot as plt
+
+crashes_df= pd.read_json('trafficcrashes.json')
+
+weather_condition_gt= crashes_df[['weather_condition','posted_speed_limit']].query('posted_speed_limit < 25')
+
+#Create series for each of the two columns to use in scatterplot
+posted_speed_limit__series= weather_condition_gt.posted_speed_limit
+weather_condition= weather_conditions_gt.weather_condition
+
+fig=plt.figure()
+
+
+#Specify marker and line style (here, none) to use in scatterplot
+plt.plot(weather_condition, posted_speed_lijmit_series, marker= ".", linestyle="none")
+plt.title('Posted Speed Limit vs Weather Conditions')
+plt.xlabel('Posted Speed Limit')
+plt.ylabel('Weather Conditions')
+
+#Show scatter plot
+plt.show()
