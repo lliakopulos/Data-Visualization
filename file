@@ -1,10 +1,9 @@
 #Data Visualization created on 11/28/2021 by Leticia Liakopulos
-# This code still doesn't work
 
 """ In this Pyton file, we will create different charts using matplotlib
 function and its methods to create the data visualization part of our project.
 The user will be able to choose between 3 charts that analyze different
-variables ( categorical and nuhmerical inside the file trafficcrashes.json """
+variables (categorical and numerical within the file trafficcrashes.json) """
 
 
 
@@ -14,20 +13,92 @@ import matplotlib.pyplot as plt
 
 crashes_df= pd.read_json('trafficcrashes.json')
 
-weather_condition_gt= crashes_df[['weather_condition','posted_speed_limit']].query('posted_speed_limit < 25')
-
-#Create series for each of the two columns to use in scatterplot
-posted_speed_limit__series= weather_condition_gt.posted_speed_limit
-weather_condition= weather_conditions_gt.weather_condition
-
-fig=plt.figure()
 
 
-#Specify marker and line style (here, none) to use in scatterplot
-plt.plot(weather_condition, posted_speed_lijmit_series, marker= ".", linestyle="none")
-plt.title('Posted Speed Limit vs Weather Conditions')
-plt.xlabel('Posted Speed Limit')
-plt.ylabel('Weather Conditions')
 
-#Show scatter plot
-plt.show()
+# Display the options of scatter plots that the user can choose that will be compared to POSTED SPEED LIMIT
+print("These are the options to compare with POSTED SPEED LIMIT > 25 ")
+choices= ["#1 Crash Month, #2 Crash Hour, #3 Crash Day of the Week"]
+print (choices)
+
+#Ask user to enter the chart to be analyzed with POSTED SPEED LIMIT
+#Asks user to input the number of independent variables for ols up to 3 & checks if valid
+while True:
+    choice= input("select the number that corresponds to the chart that you wish to see POSTED SPEED LIMIT greater than 25 compared with: ")
+    if choice not in ('1', '2', '3'):
+        print("select a valid option.")
+        print("These are the options to compare with POSTED SPEED LIMIT > 25 ")
+        print(choices)
+    else:
+        choice=int(choice)
+        print (" you selected",choice)
+        break
+
+# use of if function and elif functions to create the user interaction. Also display the charts based on the user decision
+
+"""CHARTS"""
+     
+if choice == 1:
+    crash_month_gt= crashes_df[['CRASH_MONTH','POSTED_SPEED_LIMIT']].query('POSTED_SPEED_LIMIT> 25')
+
+    #Create series for each of the two columns to use in scatterplot
+    posted_speed_limit_series= crash_month_gt.POSTED_SPEED_LIMIT
+    crash_month= crash_month_gt.CRASH_MONTH
+    fig=plt.figure()
+
+    #Specify marker and line style (here, none) to use in scatterplot
+    plt.plot(crash_month, posted_speed_limit_series, marker= ".", linestyle="none")
+    plt.title('POSTED SPEED LIMIT vs CRASH MONTH')
+    plt.xlabel('CRASH MONTH')
+    plt.ylabel('POSTED SPEED LIMIT')
+
+    #Show scatter plot
+    plt.show()
+    
+    #Display message with conclusion about the chart
+    print("Most crashes happen when the speed limit it 30-35. Also, the month where there are more crashes is September")
+
+if choice == 2:
+    crashes_df2= pd.read_json('trafficcrashes.json')
+    crash_hour_gt= crashes_df2[['CRASH_HOUR','POSTED_SPEED_LIMIT']].query('POSTED_SPEED_LIMIT> 25')
+
+    #print(weather_condition_gt.head())
+    #Create series for each of the two columns to use in scatterplot
+    posted_speed_limit_series= crash_hour_gt.POSTED_SPEED_LIMIT
+    crash_hour= crash_hour_gt.CRASH_HOUR
+    fig=plt.figure()
+
+
+    #Specify marker and line style (here, none) to use in scatterplot
+    plt.plot(crash_hour, posted_speed_limit_series, marker= ".", linestyle="none")
+    plt.title('POSTED SPEED LIMIT vs CRASH HOUR')
+    plt.xlabel('CRASH HOUR')
+    plt.ylabel('POSTED SPEED LIMIT')
+    #Show scatter plot
+    plt.show()
+
+    #Display message with conclusion about the chart
+    print("Most crashes happen when the speed limit it 30-35. Also, most crashes happen between 3pm-6pm.")
+
+if choice== 3:
+    crashes_df3= pd.read_json('trafficcrashes.json')
+    crash_day_of_week_gt= crashes_df3[['CRASH_DAY_OF_WEEK','POSTED_SPEED_LIMIT']].query('POSTED_SPEED_LIMIT> 25')
+
+    #print(weather_condition_gt.head())
+    #Create series for each of the two columns to use in scatterplot
+    posted_speed_limit_series= crash_day_of_week_gt.POSTED_SPEED_LIMIT
+    crash_date_of_week= crash_day_of_week_gt.CRASH_DAY_OF_WEEK
+    fig=plt.figure()
+
+    #Specify marker and line style (here, none) to use in scatterplot
+    plt.plot(crash_date_of_week, posted_speed_limit_series, marker= ".", linestyle="none")
+    plt.title('POSTED SPEED LIMIT vs CRASH DAY OF WEEK')
+    plt.xlabel('CRASH DAY OF WEEK')
+    plt.ylabel('POSTED SPEED LIMIT')
+
+    #Show scatter plot
+    plt.show()
+
+    #Display message with conclusion about the chart
+    print("Most crashes happen when the speed limit it 30-35. Also, most crashes happen on Saturdays.")
+
